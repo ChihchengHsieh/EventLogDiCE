@@ -602,7 +602,7 @@ cf_out = dice.run_pls(
 ```
 
 
-# Staged-wise result.
+# Customed DiCE Staged-wise result.
 
 ## After "A_PREACCEPTED_COMPLETE"
 
