@@ -724,8 +724,13 @@ cf_out = dice.run_pls(
 
 ```
 
+# Why counterfactal is hard to find for categorical features. 
 
+![image](https://user-images.githubusercontent.com/37566901/123822510-b4895c00-d93f-11eb-801c-700a294bc0ff.png)
 
+![image](https://user-images.githubusercontent.com/37566901/123822581-c4a13b80-d93f-11eb-977e-90a4c65e595e.png)
+
+![image](https://user-images.githubusercontent.com/37566901/123822968-15189900-d940-11eb-852b-82954c1df493.png)
 
 
 
