@@ -1,0 +1,46 @@
+{
+	"train": {
+		"stop_epoch": 2,
+		"batch_size": 128,
+		"verbose_freq": 250,
+		"run_validation_freq": 80,
+		"train_test_split_portion": [
+			0.8,
+			0.1
+		],
+		"random_seed": 12345
+	},
+	"model": {
+		"activity_embedding_dim": 32,
+		"resource_embedding_dim": 128,
+		"lstm_hidden": 64,
+		"dense_dim": 64,
+		"dropout": 0.1
+	},
+	"dataset": {
+		"file_path": "./data/event_logs/BPI_Challenge_2012.xes",
+		"preprocessed_folder_path": "./data/preprocessed/BPI_Challenge_2012_scenario",
+		"include_types": [
+			"A",
+			"O",
+			"W"
+		],
+		"include_complete_only": true,
+		"sample_times": 20
+	},
+	"loss": {
+		"loss": "BCE"
+	},
+	"optim": {
+		"optimizer": "Adam",
+		"learning_rate": 0.005,
+		"l2": 1e-10,
+		"lr_scheduler": "ExponentialDecay",
+		"lr_step_scheduler_step": 800,
+		"lr_setp_scheduler_gamma": 0.8,
+		"lr_exp_decay_scheduler_step": 1000,
+		"lr_exp_decay_scheduler_rate": 0.96,
+		"lr_exp_decay_scheduler_staircase": true,
+		"SGD_momentum": 0.9
+	}
+}
