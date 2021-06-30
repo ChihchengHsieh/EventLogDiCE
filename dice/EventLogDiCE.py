@@ -166,6 +166,7 @@ class EventLogDiCE():
                 updating_resource_cf=True,
                 updating_amount_cf=True,
                 scenario_threshold=0.5,
+                scenario_ask_to_continue=True,
                 class_loss_weight=1.0,
                 distance_loss_weight=1e-8,
                 cat_loss_weight=0.0,
@@ -212,6 +213,9 @@ class EventLogDiCE():
         [scenario_threshold]: The threshold for output a valid scenario. The scenario model
         will calculate a value for each CF step. This functino will only stop and return CF
         when the scenario model the mean value of each step is > scenario_threshold.
+
+        [scenario_ask_to_continue]: If `scenario_ask_to_continue=True`, when a counterfactual found with
+        low scenario score, it will ask the user if you want to continue.
 
         # When `scenario_threshold=True`, only output when below statement return true.
         >>>
@@ -441,7 +445,7 @@ class EventLogDiCE():
                                 f"! Counterfactual found in step [{i+1}] \U0001F917 !")
                 else:
                     print_block(f"Running time: {time.time() - start_at:.2f}",
-                                f"! Counterfactual with invalid scenario found in step [{i+1}] \U0001F648 !")
+                                f"! Counterfactual with low scenario score found in step [{i+1}] \U0001F648 !")
 
                 activity_out = [self.possible_activities[i]
                                 for i in tf.argmax(temp_ohe_activity_cf, axis=-1).numpy()]
@@ -463,7 +467,12 @@ class EventLogDiCE():
                 if (valid_scanrio):
                     return amount_out, activity_out, resource_out
                 else:
-                    continue
+                    if (scenario_ask_to_continue):
+                        asnwer = input("Do you still want to continue")
+                        if asnwer.lower().startswith("y"):
+                            continue
+                        else:
+                            return amount_out, activity_out, resource_out
 
         activity_out = [self.possible_activities[i]
                         for i in tf.argmax(temp_ohe_activity_cf, axis=-1).numpy()]
