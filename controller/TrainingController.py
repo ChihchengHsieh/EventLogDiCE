@@ -239,7 +239,7 @@ class TrainingController(object):
     def train_start_print(self):
         print_block("Total epochs: %d" % (self.parameters.stop_epoch))
         print_block("Total steps: %d" %
-                  (self.parameters.stop_epoch * len(self.train_dataset)))
+                    (self.parameters.stop_epoch * len(self.train_dataset)))
 
     def not_end(self,):
         return self.current_epoch < self.parameters.stop_epoch
