@@ -188,7 +188,7 @@ class EventLogDiCE():
 
         [desired_vocab]: The desired vocab we want to generate the CF for.
 
-        [use_valid_cf_only]: Wehther to replace the current CF by a valid 
+        [use_valid_cf_only]: Wehther to replace the current CF by a valid
         (one-hot encoded) for next iteration.
 
         [use_sampling]: (Work only when `use_valid_cf_only=True`). When it's `True`, we sample from
@@ -196,7 +196,7 @@ class EventLogDiCE():
 
         [scenario_using_hinge_loss]: Whether to use hinge loss for calculating the scenario loss.
         Note: the scenario model in example is trained with binary cross entropy.
-        
+
         [class_using_hinge_loss]: Whetehr to use hinge loss for calculating the class (CF) loss.
         Note: the pred model in example is trained with cross entropy.
 
@@ -206,19 +206,20 @@ class EventLogDiCE():
         [updating_activity_cf]: Whether to calculate the gradient of activity and update it.
 
         [updating_resource_cf]: Whether to calculate the gradient of resource and udpate it.
-        
+
         [updating_amount_cf]: Whether to calculate the graident of amount and udpate it.
 
         [scenario_threshold]: The threshold for output a valid scenario. The scenario model
         will calculate a value for each CF step. This functino will only stop and return CF
         when the scenario model the mean value of each step is > scenario_threshold.
-        
-        >>> # When `scenario_threshold=True`, only output when below statement return true.
+
+        # When `scenario_threshold=True`, only output when below statement return true.
+        >>>
         >>> np.mean(scenarios_values_in_each_step) > scenario_threshold
 
         [class_loss_weight]: Loss weight for finding counterfactual.
 
-        [distance_loss_weight]: Loss weight for the distance between current counterfactual 
+        [distance_loss_weight]: Loss weight for the distance between current counterfactual
         and query data.
 
         [cat_loss_weight]: Loss weight for categorical data, which retricting the sum value of
@@ -314,7 +315,8 @@ class EventLogDiCE():
                     trace_len
                 )
 
-                cf_output, cf_pred_idx = self.get_pred_model_ouptut(model_input)
+                cf_output, cf_pred_idx = self.get_pred_model_ouptut(
+                    model_input)
                 self.cf_output = cf_output
                 # Distance loss
                 activity_distance_loss = tf.reduce_sum(
@@ -428,8 +430,18 @@ class EventLogDiCE():
                     ohe_resource_cf.assign(temp_ohe_resource_cf)
 
             if (temp_predicted_idx == desired_vocab_idx):
-                print_block(f"Running time: {time.time() - start_at:.2f}",
-                            f"!Counterfactual Found in step [{i+1}]!")
+
+                temp_scenario = tf.nn.sigmoid(self.scenario_model(
+                    *temp_model_input, training=False)[0]).numpy()
+
+                valid_scanrio = np.mean(temp_scenario) > scenario_threshold
+
+                if valid_scanrio:
+                    print_block(f"Running time: {time.time() - start_at:.2f}",
+                                f"! Counterfactual found in step [{i+1}] \U0001F917 !")
+                else:
+                    print_block(f"Running time: {time.time() - start_at:.2f}",
+                                f"! Counterfactual with invalid scenario found in step [{i+1}] \U0001F648 !")
 
                 activity_out = [self.possible_activities[i]
                                 for i in tf.argmax(temp_ohe_activity_cf, axis=-1).numpy()]
@@ -445,26 +457,21 @@ class EventLogDiCE():
                 print_block(activity_out, "Valid CF Activities")
                 print_block(resource_out, "Valid CF Resource")
 
-                temp_scenario = tf.nn.sigmoid(self.scenario_model(
-                    *temp_model_input, training=False)[0]).numpy()
-
                 print_block(np.around(temp_scenario.flatten(),
                             decimals=1), "Valid CF scenario output")
-                # print_block(temp_scenario, "Valid CF scenario output")
 
-                if (scenario_threshold):
-                    if (np.mean(temp_scenario) > scenario_threshold):
-                        return amount_out, activity_out, resource_out
-                    else:
-                        continue
-                else:
+                if (valid_scanrio):
                     return amount_out, activity_out, resource_out
+                else:
+                    continue
 
         activity_out = [self.possible_activities[i]
                         for i in tf.argmax(temp_ohe_activity_cf, axis=-1).numpy()]
         resource_out = [self.possible_resources[i]
                         for i in tf.argmax(temp_ohe_resource_cf, axis=-1).numpy()]
         amount_out = amount_cf.numpy()[0]
+
+        print_block("No valid counterfactual found! \U0001F630")
 
         print_block(amount_input, "Input Amount")
         print_block(vocab_activity_no_tag, "Input Activities")
