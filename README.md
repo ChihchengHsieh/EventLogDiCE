@@ -732,5 +732,57 @@ cf_out = dice.run_pls(
 
 ![image](https://user-images.githubusercontent.com/37566901/123822968-15189900-d940-11eb-852b-82954c1df493.png)
 
+# Experiments using our own DiCE mdoel:
+
+
+## After "A_PREACCEPTED_COMPLETE"
+
+### \subsection{Change AMOUNT only}
+
+### \subsection{Change Resource only}
+ 
+### \subsection{Change Activity only}
+
+### \subsection{Change Amount and Resource}
+
+### \subsection{Change Amount and Activity}
+
+### \subsection{Change Activity and Resource}
+
+### \subsection{Change Activity, Resource and Amount}
+
+
+## After "A_ACCEPTED_COMPLETE"
+
+### \subsection{Change AMOUNT only}
+
+### \subsection{Change Resource only}
+ 
+### \subsection{Change Activity only}
+
+### \subsection{Change Amount and Resource}
+
+### \subsection{Change Amount and Activity}
+
+### \subsection{Change Activity and Resource}
+
+### \subsection{Change Activity, Resource and Amount}
+
+## After "A_FINALIZED_COMPLETE"
+
+### \subsection{Change AMOUNT only}
+
+### \subsection{Change Resource only}
+ 
+### \subsection{Change Activity only}
+
+### \subsection{Change Amount and Resource}
+
+### \subsection{Change Amount and Activity}
+
+### \subsection{Change Activity and Resource}
+
+### \subsection{Change Activity, Resource and Amount}
+
 
 
