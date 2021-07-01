@@ -50,11 +50,11 @@ class LSTMPredNextWithResourceModel(ControllerModel):
             return_state=True,
         )
 
-        # self.activity_lstm_sec = tf.keras.layers.LSTM(
-        #     self.parameters.lstm_hidden,
-        #     return_sequences=True,
-        #     return_state=True,
-        # )
+        self.activity_lstm_sec = tf.keras.layers.LSTM(
+            self.parameters.lstm_hidden,
+            return_sequences=True,
+            return_state=True,
+        )
 
         self.resource_lstm = tf.keras.layers.LSTM(
             self.parameters.lstm_hidden,
@@ -62,11 +62,11 @@ class LSTMPredNextWithResourceModel(ControllerModel):
             return_state=True,
         )
 
-        # self.resource_lstm_sec = tf.keras.layers.LSTM(
-        #     self.parameters.lstm_hidden,
-        #     return_sequences=True,
-        #     return_state=True,
-        # )
+        self.resource_lstm_sec = tf.keras.layers.LSTM(
+            self.parameters.lstm_hidden,
+            return_sequences=True,
+            return_state=True,
+        )
 
         self.out_net = tf.keras.models.Sequential(
             [
@@ -111,31 +111,32 @@ class LSTMPredNextWithResourceModel(ControllerModel):
         activity_lstm_out, a_h_out, a_c_out = self.activity_lstm(
             activity_emb_out, training=training, mask=mask, initial_state=init_state[0] if init_state else None)
 
-        # activity_lstm_out_sec, a_h_out_sec, a_c_out_sec = self.activity_lstm_sec(
-        #     activity_lstm_out, training=training, mask=mask, initial_state=init_state[1] if init_state else None)
+        activity_lstm_out_sec, a_h_out_sec, a_c_out_sec = self.activity_lstm_sec(
+            activity_lstm_out, training=training, mask=mask, initial_state=init_state[1] if init_state else None)
 
         resources_lstm_out, r_h_out, r_c_out = self.resource_lstm(
             resource_emb_out, training=training, mask=mask, initial_state=init_state[2] if init_state else None)
 
-        # resources_lstm_out_sec, r_h_out_sec, r_c_out_sec = self.resource_lstm_sec(
-        #     resources_lstm_out, training=training, mask=mask, initial_state=init_state[3] if init_state else None)
+        resources_lstm_out_sec, r_h_out_sec, r_c_out_sec = self.resource_lstm_sec(
+            resources_lstm_out, training=training, mask=mask, initial_state=init_state[3] if init_state else None)
 
         amount_to_concate = tf.repeat(
-            tf.expand_dims(
-                tf.expand_dims(
-                    amount,
-                    axis=1
-                ),
-                axis=2
-            ),
+            amount[:, tf.newaxis, tf.newaxis],
+            # tf.expand_dims(
+            #     tf.expand_dims(
+            #         amount,
+            #         axis=1
+            #     ),
+            #     axis=2
+            # ),
             max_length,
             axis=1
         )
 
         concat_out = tf.concat(
             [
-                activity_lstm_out,
-                resources_lstm_out,
+                activity_lstm_out_sec,
+                resources_lstm_out_sec,
                 amount_to_concate
             ],
             axis=-1
@@ -143,8 +144,8 @@ class LSTMPredNextWithResourceModel(ControllerModel):
 
         out = self.out_net(concat_out, training=training)
 
-        return out, [(a_h_out, a_c_out), (r_h_out, r_c_out)]
-        # return out, [(a_h_out, a_c_out), (a_h_out_sec, a_c_out_sec), (r_h_out, r_c_out), (r_h_out_sec, r_c_out_sec)]
+        # return out, [(a_h_out, a_c_out), (r_h_out, r_c_out)]
+        return out, [(a_h_out, a_c_out), (a_h_out_sec, a_c_out_sec), (r_h_out, r_c_out), (r_h_out_sec, r_c_out_sec)]
 
     def data_call(self, data, training=None):
         '''
