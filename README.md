@@ -1121,3 +1121,307 @@ Not found
 ```
 
 
+
+
+
+# REAL EXPERIEMNT
+
+
+## REAL trace in dataset:
+['<SOS>', 'A_SUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'A_ACCEPTED_COMPLETE', 'A_FINALIZED_COMPLETE', 'O_SELECTED_COMPLETE', 'O_CREATED_COMPLETE', 'O_SENT_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'O_SENT_BACK_COMPLETE', 'W_Nabellen offertes_COMPLETE', 'O_ACCEPTED_COMPLETE', 'A_APPROVED_COMPLETE', 'A_REGISTERED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'W_Valideren aanvraag_COMPLETE']
+
+
+## A_PREACCEPTED_COMPLETE
+
+### Input 
+
+```
+====================Input Amount====================
+| [15500.] 
+====================================================
+
+====================Input Activities====================
+| ['A_SUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE'] 
+========================================================
+
+====================Input Resource====================
+| ['112', '112'] 
+======================================================
+```
+
+### Predictino
+```python
+====================Model Prediction====================
+| Prediction: [A_PREACCEPTED_COMPLETE(10)] | Desired: [A_DECLINED_COMPLETE(7)] 
+========================================================
+
+====================Counterfactual Process====================
+| [0] ==========> [1] 
+==============================================================
+
+```
+### \subsubsection{Change AMOUNT only}
+Not found
+
+### \subsubsection{Change Resource only}
+Not found
+
+### \subsubsection{Change Activity only}
+```python
+====================Valid CF Amount====================
+| 15500.0 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0.5] 
+================================================================
+```
+
+### \subsubsection{Change Amount and Resource}
+Not found
+
+
+### \subsubsection{Change Amount and Activity}
+
+```python
+====================Valid CF Amount====================
+| 15497.5 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0.5] 
+================================================================
+```
+
+### \subsubsection{Change Activity and Resource}
+
+```python
+====================Valid CF Amount====================
+| 15500.0 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['10779', '10862'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0. ] 
+================================================================
+```
+
+### \subsubsection{Change Activity, Resource and Amount}
+
+```python
+====================Valid CF Amount====================
+| 15487.5 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['10779', '10862'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0. ] 
+================================================================
+```
+
+
+## A_ACCEPTED_COMPLETE
+
+### Input 
+
+```python
+====================Input Amount====================
+| [15500.] 
+====================================================
+
+====================Input Activities====================
+| ['A_SUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'W_Completeren aanvraag_COMPLETE'] 
+========================================================
+
+====================Input Resource====================
+| ['112', '112', '112', '11180', '11201'] 
+======================================================
+
+```
+
+### Model prediction
+
+```python
+====================Model Prediction====================
+| Prediction: [W_Completeren aanvraag_COMPLETE(22)] | Desired: [A_DECLINED_COMPLETE(7)] 
+========================================================
+
+====================Counterfactual Process====================
+| [0] ==========> [1] 
+==============================================================
+```
+
+\subsection*{Change AMOUNT only}
+Not found
+
+
+\subsection*{Change Resource only}
+Not found
+
+\subsection*{Change Activity only}
+Not found
+
+\subsection*{Change Amount and Resource}
+Not found
+
+
+\subsection*{Change Amount and Activity}
+Not found
+
+\subsection*{Change Activity and Resource}
+```python
+====================Valid CF Amount====================
+| 15500.0 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_SUBMITTED_COMPLETE', 'A_CANCELLED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_PREACCEPTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112', '10881', '11299', '10188'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 1.  1.  1.  1.  0.9] 
+================================================================
+```
+
+\subsection*{Change Activity, Resource and Amount}
+```python
+====================Valid CF Amount====================
+| 15498.5 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_SUBMITTED_COMPLETE', 'A_CANCELLED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_PREACCEPTED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112', '10881', '11299', '10188'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 1.  1.  1.  1.  0.9] 
+================================================================
+```
+
+## A_FINALIZED_COMPLETE
+
+### Input 
+```python
+====================Input Amount====================
+| [15500.] 
+====================================================
+
+====================Input Activities====================
+| ['A_SUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'W_Completeren aanvraag_COMPLETE', 'A_ACCEPTED_COMPLETE'] 
+========================================================
+
+====================Input Resource====================
+| ['112', '112', '112', '11180', '11201', '11201'] 
+======================================================
+```
+
+### Model prediction
+```python
+====================Model Prediction====================
+| Prediction: [O_SELECTED_COMPLETE(17)] | Desired: [A_DECLINED_COMPLETE(7)] 
+========================================================
+
+====================Counterfactual Process====================
+| [0] ==========> [1] 
+==============================================================
+```
+
+\subsection*{Change AMOUNT only}
+Not found
+
+\subsection*{Change Resource only}
+Not found
+
+\subsection*{Change Activity only}
+```python
+====================Valid CF Amount====================
+| 15500.0 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112', '112', '11180', '11201', '11201'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0.3 0.8 0.9 0.8 0.4] 
+================================================================
+```
+
+\subsection*{Change Amount and Resource}
+Not found
+
+
+\subsection*{Change Amount and Activity}
+```python
+====================Valid CF Amount====================
+| 15496.0 
+=======================================================
+
+====================Valid CF Activities====================
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_FINALIZED_COMPLETE'] 
+===========================================================
+
+====================Valid CF Resource====================
+| ['112', '112', '112', '11180', '11201', '11201'] 
+=========================================================
+
+====================Valid CF scenario output====================
+| [0.7 0.  0.3 0.8 0.9 0.8 0.4] 
+================================================================
+```
+
+\subsection*{Change Activity and Resource}
+Not found
+
+
+\subsection*{Change Activity, Resource and Amount}
+Not found
+
+
+
+
+
+
+
