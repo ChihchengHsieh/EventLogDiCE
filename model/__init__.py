@@ -1,3 +1,2 @@
-from model.LSTMPredNextWithResourceModel import *
-from model.LSTMScenarioCfWithResourceModel import *
-from model.LSTMPredNextAmountSpecificModel import *
+from model.LSTMPredNextModel import *
+from model.LSTMScenarioCfModel import *

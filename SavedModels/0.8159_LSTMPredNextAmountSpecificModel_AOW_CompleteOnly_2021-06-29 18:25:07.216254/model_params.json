@@ -1,7 +1,0 @@
-{
-	"activity_embedding_dim": 32,
-	"resource_embedding_dim": 128,
-	"lstm_hidden": 64,
-	"dense_dim": 64,
-	"dropout": 0.1
-}

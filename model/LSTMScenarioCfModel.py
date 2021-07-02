@@ -3,7 +3,7 @@ from utils.save import load_parameters, save_parameters_json
 import os
 import pathlib
 from model.ControllerModel import ControllerModel
-from parameters.model import LSTMPredNextWithResourceModelParameters, LSTMScenarioCfWithResourceModelParameters
+from parameters.model import LSTMScenarioCfModelParameters
 from utils.print import print_block
 import tensorflow as tf
 from utils import VocabDict
@@ -11,8 +11,8 @@ from typing import List
 from datetime import datetime
 
 
-class LSTMScenarioCfWithResourceModel(ControllerModel):
-    name = "LSTMScenarioCfWithResourceModel"
+class LSTMScenarioCfModel(ControllerModel):
+    name = "LSTMScenarioCfModel"
     activity_vocab_file_name = "activity_vocab.json"
     resource_vocab_file_name = "resource_vocab.json"
     parameters_file_name = "model_params.json"
@@ -20,7 +20,7 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
     def __init__(self,
                  activity_vocab: VocabDict,
                  resource_vocab: VocabDict,
-                 parameters: LSTMScenarioCfWithResourceModelParameters,
+                 parameters: LSTMScenarioCfModelParameters,
                  pad_value_in_target=-1
                  ):
         super().__init__()
@@ -264,12 +264,12 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
         os.makedirs(folder_path, exist_ok=True)
 
         activitiy_vocab_path = os.path.join(
-            folder_path, LSTMScenarioCfWithResourceModel.activity_vocab_file_name)
+            folder_path, LSTMScenarioCfModel.activity_vocab_file_name)
         with open(activitiy_vocab_path, 'w') as output_file:
             json.dump(self.activity_vocab.vocabs, output_file, indent='\t')
 
         resource_vocab_path = os.path.join(
-            folder_path, LSTMScenarioCfWithResourceModel.resource_vocab_file_name)
+            folder_path, LSTMScenarioCfModel.resource_vocab_file_name)
         with open(resource_vocab_path, 'w') as output_file:
             json.dump(self.resource_vocab.vocabs, output_file, indent='\t')
 
@@ -279,7 +279,7 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
         os.makedirs(folder_path, exist_ok=True)
 
         parameters_saving_path = os.path.join(
-            folder_path, LSTMScenarioCfWithResourceModel.parameters_file_name
+            folder_path, LSTMScenarioCfModel.parameters_file_name
         )
 
         save_parameters_json(parameters_saving_path, self.parameters)
@@ -305,13 +305,13 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
     @staticmethod
     def load_vocab(folder_path):
         activitiy_vocab_path = os.path.join(
-            folder_path, LSTMScenarioCfWithResourceModel.activity_vocab_file_name)
+            folder_path, LSTMScenarioCfModel.activity_vocab_file_name)
         with open(activitiy_vocab_path, 'r') as output_file:
             vocabs = json.load(output_file)
             activity_vocab = VocabDict(vocabs)
 
         resource_vocab_path = os.path.join(
-            folder_path, LSTMScenarioCfWithResourceModel.resource_vocab_file_name)
+            folder_path, LSTMScenarioCfModel.resource_vocab_file_name)
         with open(resource_vocab_path, 'r') as output_file:
             vocabs = json.load(output_file)
             resource_vocab = VocabDict(vocabs)
@@ -323,7 +323,7 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
     @staticmethod
     def load_model_params(folder_path):
         parameters = load_parameters(
-            folder_path, LSTMScenarioCfWithResourceModel.parameters_file_name)
+            folder_path, LSTMScenarioCfModel.parameters_file_name)
         print_block("Model parameters loaded successfully from: %s " %
                     (folder_path))
         return parameters
@@ -331,16 +331,16 @@ class LSTMScenarioCfWithResourceModel(ControllerModel):
     @staticmethod
     def load(folder_path):
 
-        parameters_json = LSTMScenarioCfWithResourceModel.load_model_params(
+        parameters_json = LSTMScenarioCfModel.load_model_params(
             folder_path)
 
-        parameters = LSTMPredNextWithResourceModelParameters(
+        parameters = LSTMScenarioCfModelParameters(
             **parameters_json)
 
-        activitiy_vocab, resource_vocab = LSTMScenarioCfWithResourceModel.load_vocab(
+        activitiy_vocab, resource_vocab = LSTMScenarioCfModel.load_vocab(
             folder_path)
 
-        model = LSTMScenarioCfWithResourceModel(
+        model = LSTMScenarioCfModel(
             activitiy_vocab,
             resource_vocab,
             parameters

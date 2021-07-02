@@ -321,7 +321,9 @@ class EventLogDiCE():
 
                 cf_output, cf_pred_idx = self.get_pred_model_ouptut(
                     model_input)
+                    
                 self.cf_output = cf_output
+
                 # Distance loss
                 activity_distance_loss = tf.reduce_sum(
                     tf.pow((ohe_activity_cf - ohe_activity_backup), 2))

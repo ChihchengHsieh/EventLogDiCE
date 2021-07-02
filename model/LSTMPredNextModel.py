@@ -1,6 +1,10 @@
 import json
+from tensorflow.python import keras
 
 from tensorflow.python.keras import models
+from tensorflow.python.keras.api._v2.keras import layers
+from tensorflow.python.keras.layers import dense_attention
+from tensorflow.python.keras.layers.core import Dense
 from utils.print import print_block
 from utils.save import load_parameters, save_parameters_json
 from datetime import datetime
@@ -13,11 +17,11 @@ import numpy as np
 from typing import List
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-from parameters.model import LSTMPredNextWithResourceModelParameters
+from parameters.model import LSTMPredNextModelParameters
 
 
-class LSTMPredNextWithResourceModel(ControllerModel):
-    name = "LSTMPredNextWithResourceModel"
+class LSTMPredNextModel(ControllerModel):
+    name = "LSTMPredNextModel"
     activity_vocab_file_name = "activity_vocab.json"
     resource_vocab_file_name = "resource_vocab.json"
     parameters_file_name = "model_params.json"
@@ -25,7 +29,7 @@ class LSTMPredNextWithResourceModel(ControllerModel):
     def __init__(self,
                  activity_vocab: VocabDict,
                  resource_vocab: VocabDict,
-                 parameters: LSTMPredNextWithResourceModelParameters,
+                 parameters: LSTMPredNextModelParameters,
                  ):
         super().__init__()
         self.activity_vocab = activity_vocab
@@ -66,6 +70,16 @@ class LSTMPredNextWithResourceModel(ControllerModel):
             self.parameters.lstm_hidden,
             return_sequences=True,
             return_state=True,
+        )
+
+        self.amount_net = tf.keras.models.Sequential(
+            [
+                tf.keras.layers.Dense(self.parameters.dense_dim),
+                tf.keras.layers.BatchNormalization(),
+                tf.keras.layers.LeakyReLU(),
+                tf.keras.layers.Dropout(self.parameters.dropout),
+                tf.keras.layers.Dense(self.parameters.dense_dim)
+            ]
         )
 
         self.out_net = tf.keras.models.Sequential(
@@ -121,14 +135,8 @@ class LSTMPredNextWithResourceModel(ControllerModel):
             resources_lstm_out, training=training, mask=mask, initial_state=init_state[3] if init_state else None)
 
         amount_to_concate = tf.repeat(
-            amount[:, tf.newaxis, tf.newaxis],
-            # tf.expand_dims(
-            #     tf.expand_dims(
-            #         amount,
-            #         axis=1
-            #     ),
-            #     axis=2
-            # ),
+            self.amount_net(tf.constant(amount, dtype=tf.float32)[:, tf.newaxis])[
+                :, tf.newaxis, :],
             max_length,
             axis=1
         )
@@ -545,7 +553,7 @@ class LSTMPredNextWithResourceModel(ControllerModel):
             "activities": tf.ones((1, 1)),
             "resources": tf.ones((1, 1)),
             "amount": [0.0],
-            "training" : False
+            "training": False
         }
 
     def save(self, folder_path: str):
@@ -571,12 +579,12 @@ class LSTMPredNextWithResourceModel(ControllerModel):
         os.makedirs(folder_path, exist_ok=True)
 
         activitiy_vocab_path = os.path.join(
-            folder_path, LSTMPredNextWithResourceModel.activity_vocab_file_name)
+            folder_path, LSTMPredNextModel.activity_vocab_file_name)
         with open(activitiy_vocab_path, 'w') as output_file:
             json.dump(self.activity_vocab.vocabs, output_file, indent='\t')
 
         resource_vocab_path = os.path.join(
-            folder_path, LSTMPredNextWithResourceModel.resource_vocab_file_name)
+            folder_path, LSTMPredNextModel.resource_vocab_file_name)
         with open(resource_vocab_path, 'w') as output_file:
             json.dump(self.resource_vocab.vocabs, output_file, indent='\t')
 
@@ -586,7 +594,7 @@ class LSTMPredNextWithResourceModel(ControllerModel):
         os.makedirs(folder_path, exist_ok=True)
 
         parameters_saving_path = os.path.join(
-            folder_path, LSTMPredNextWithResourceModel.parameters_file_name
+            folder_path, LSTMPredNextModel.parameters_file_name
         )
 
         save_parameters_json(parameters_saving_path, self.parameters)
@@ -612,13 +620,13 @@ class LSTMPredNextWithResourceModel(ControllerModel):
     @staticmethod
     def load_vocab(folder_path):
         activitiy_vocab_path = os.path.join(
-            folder_path, LSTMPredNextWithResourceModel.activity_vocab_file_name)
+            folder_path, LSTMPredNextModel.activity_vocab_file_name)
         with open(activitiy_vocab_path, 'r') as output_file:
             vocabs = json.load(output_file)
             activity_vocab = VocabDict(vocabs)
 
         resource_vocab_path = os.path.join(
-            folder_path, LSTMPredNextWithResourceModel.resource_vocab_file_name)
+            folder_path, LSTMPredNextModel.resource_vocab_file_name)
         with open(resource_vocab_path, 'r') as output_file:
             vocabs = json.load(output_file)
             resource_vocab = VocabDict(vocabs)
@@ -630,7 +638,7 @@ class LSTMPredNextWithResourceModel(ControllerModel):
     @staticmethod
     def load_model_params(folder_path):
         parameters = load_parameters(
-            folder_path, LSTMPredNextWithResourceModel.parameters_file_name)
+            folder_path, LSTMPredNextModel.parameters_file_name)
         print_block("Model parameters loaded successfully from: %s " %
                     (folder_path))
         return parameters
@@ -638,16 +646,16 @@ class LSTMPredNextWithResourceModel(ControllerModel):
     @staticmethod
     def load(folder_path):
 
-        parameters_json = LSTMPredNextWithResourceModel.load_model_params(
+        parameters_json = LSTMPredNextModel.load_model_params(
             folder_path)
 
-        parameters = LSTMPredNextWithResourceModelParameters(
+        parameters = LSTMPredNextModelParameters(
             **parameters_json)
 
-        activitiy_vocab, resource_vocab = LSTMPredNextWithResourceModel.load_vocab(
+        activitiy_vocab, resource_vocab = LSTMPredNextModel.load_vocab(
             folder_path)
 
-        model = LSTMPredNextWithResourceModel(
+        model = LSTMPredNextModel(
             activitiy_vocab,
             resource_vocab,
             parameters

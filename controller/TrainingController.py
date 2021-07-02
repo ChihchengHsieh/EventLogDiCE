@@ -196,10 +196,10 @@ class TrainingController(object):
             all_loss.append(loss)
             all_accuracy.append(accuracy)
             all_batch_size.append(len(data[0]))
+            
         self.all_accuracy = all_accuracy
         self.all_target = all_targets
         self.all_predictions = all_predictions
-        self.out = out
 
         accuracy = accuracy_score(all_targets, all_predictions)
         self.accuracy = accuracy
