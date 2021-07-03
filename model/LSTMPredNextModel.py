@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from parameters.model import LSTMPredNextModelParameters
 
 
-class LSTMPredNextModel(ControllerModel):
+class LSTMPredNextModel(ControllerModel, tf.keras.Model):
     name = "LSTMPredNextModel"
     activity_vocab_file_name = "activity_vocab.json"
     resource_vocab_file_name = "resource_vocab.json"
@@ -200,8 +200,6 @@ class LSTMPredNextModel(ControllerModel):
         return: loss value
         '''
         y_true = data[-1]
-        self.data = data
-        self.y_pred = y_pred
         y_pred = tf.nn.softmax(y_pred, axis=-1)
         loss_all = loss_fn(y_true=y_true, y_pred=y_pred)
         loss_all = loss_all * tf.cast(y_true != 0, dtype=tf.float32)
@@ -531,12 +529,6 @@ class LSTMPredNextModel(ControllerModel):
             ax.scatter(embedding_pca[i, 0], embedding_pca[i, 1])
             ax.annotate(
                 ordered_resources[i], (embedding_pca[i, 0], embedding_pca[i, 1]))
-
-    def show_model_info(self):
-        out = self.call(tf.ones((1, 1)), tf.ones(
-            (1, 1)), [0.0], training=False)
-        print(out)
-        self.summary()
 
     def get_folder_path(self, current_file, test_accuracy, additional=""):
         saving_folder_path = os.path.join(

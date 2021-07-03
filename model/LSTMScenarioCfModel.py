@@ -11,7 +11,7 @@ from typing import List
 from datetime import datetime
 
 
-class LSTMScenarioCfModel(ControllerModel):
+class LSTMScenarioCfModel(ControllerModel, tf.keras.Model):
     name = "LSTMScenarioCfModel"
     activity_vocab_file_name = "activity_vocab.json"
     resource_vocab_file_name = "resource_vocab.json"
@@ -189,17 +189,7 @@ class LSTMScenarioCfModel(ControllerModel):
     def get_labels(self):
         return self.activity_vocab.vocabs.keys()
 
-    def get_mean_and_variance(self, df):
-        pass
-
-    def should_load_mean_and_vairance(self):
-        return False
-
-    def has_mean_and_variance(self,):
-        return False
-
     def get_prediction_list_from_out(self, y_pred, data):
-
         y_true = data[-1]
         flatten_y_true = tf.reshape(y_true, (-1))
         select_idx = tf.where(flatten_y_true != self.pad_value_in_target)
@@ -217,19 +207,6 @@ class LSTMScenarioCfModel(ControllerModel):
 
     def generate_mask(self, target):
         return target != self.pad_value_in_target
-
-    def get_flatten_prediction_and_targets(self, y_pred, y_true, pad_value=-1):
-        flatten_y_true = tf.reshape(y_true, (-1))
-        select_idx = tf.where(flatten_y_true != pad_value)
-        y_true_without_pad = tf.gather(flatten_y_true, select_idx)
-        y_pred_wihtout_pad = tf.gather(tf.reshape(y_pred, (-1)), select_idx)
-        y_pred_wihtout_pad = tf.cast(y_pred_wihtout_pad > .5, dtype=tf.float32)
-
-        return y_pred_wihtout_pad.numpy().tolist(), y_true_without_pad.numpy().tolist()
-
-    def show_model_info(self):
-        self.call(tf.ones((1, 1)), tf.ones((1, 1)), [0.0], training=False)
-        self.summary()
 
     def get_folder_path(self, current_file, test_accuracy, additional=""):
         saving_folder_path = os.path.join(

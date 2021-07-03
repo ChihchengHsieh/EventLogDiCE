@@ -1,4 +1,5 @@
 from enum import Enum
+from model.PredNextBERT import BERTScheduler
 
 class SelectableDatasets(Enum):
 
@@ -32,6 +33,7 @@ class SelectableOptimizer(Enum):
 class SelectableLrScheduler(Enum):
     StepScheduler = "StepScheduler"
     ExponentialDecay= "ExponentialDecay"
+    BERTScheduler = "BERTScheduler"
     NotUsing = "NotUsing"
 
 class BPI2012ActivityType(Enum):

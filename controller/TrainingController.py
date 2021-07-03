@@ -1,3 +1,4 @@
+from model.PredNextBERT import BERTScheduler
 from tensorflow.python.keras.utils import losses_utils
 from parameters.training import LossParameters, OptimizerParameters, TrainingParameters
 from utils.preprocessing import dataset_split
@@ -79,6 +80,11 @@ class TrainingController(object):
                 decay_rate=self.optim_params.lr_exp_decay_scheduler_rate,
                 staircase=self.optim_params.lr_exp_decay_scheduler_staircase,
             )
+        elif self.optim_params.lr_scheduler == SelectableLrScheduler.BERTScheduler:
+            # This scheduler is only for BERT
+            learning_rate = BERTScheduler(
+                self.model.parameters.model_dim
+            )
         else:
             raise NotSupportedError(
                 "Lr scheduler you selected is not supported")
@@ -97,11 +103,11 @@ class TrainingController(object):
         # Setting up loss
         if self.loss_params.loss == SelectableLoss.CrossEntropy:
             self.loss = tf.keras.losses.SparseCategoricalCrossentropy(
-                reduction=losses_utils.ReductionV2.NONE
+                reduction=losses_utils.ReductionV2.NONE, from_logits=self.loss_params.from_logits
             )
         elif self.loss_params.loss == SelectableLoss.BCE:
             self.loss = tf.keras.losses.BinaryCrossentropy(
-                reduction=losses_utils.ReductionV2.NONE
+                reduction=losses_utils.ReductionV2.NONE, from_logits=self.loss_params.from_logits
             )
         elif self.loss_params.loss == SelectableLoss.HingeLoss:
             self.loss = tf.keras.metrics.hinge
@@ -196,7 +202,7 @@ class TrainingController(object):
             all_loss.append(loss)
             all_accuracy.append(accuracy)
             all_batch_size.append(len(data[0]))
-            
+
         self.all_accuracy = all_accuracy
         self.all_target = all_targets
         self.all_predictions = all_predictions

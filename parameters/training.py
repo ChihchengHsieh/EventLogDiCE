@@ -42,6 +42,7 @@ class OptimizerParameters(object):
 @dataclass
 class LossParameters(object):
     loss: SelectableLoss = SelectableLoss.CrossEntropy
+    from_logits: bool = False
 
 
 @dataclass
