@@ -1,0 +1,7 @@
+{
+	"num_layers": 4,
+	"model_dim": 32,
+	"feed_forward_dim": 64,
+	"num_heads": 4,
+	"dropout_rate": 0.1
+}
