@@ -464,7 +464,7 @@ class EventLogDiCE():
                 print_block(resource_out, "Valid CF Resource")
 
                 print_block(np.around(temp_scenario.flatten(),
-                            decimals=1), "Valid CF scenario output")
+                            decimals=1).tolist(), "Valid CF scenario output")
 
                 if (valid_scanrio):
                     return amount_out, activity_out, resource_out
