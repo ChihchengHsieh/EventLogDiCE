@@ -119,10 +119,9 @@
 ```
 
 ## Prediction
-
 ```python
 ====================Model Prediction====================
-| Prediction: [O_SELECTED_COMPLETE(17)] | Desired: [A_ACCEPTED_COMPLETE(3)] 
+| Prediction: [O_SELECTED_COMPLETE(17)] | Desired: [A_FINALIZED_COMPLETE(8)] 
 ========================================================
 
 ====================Counterfactual Process====================
@@ -134,17 +133,16 @@
 ```Not found```
 
 ### \subsection*{Change Resource only}
-```Not found```
+```Not found`
 
 ### \subsection*{Change Activity only}
-
 ```python
 ====================Valid CF Amount====================
 | 15500.0 
 =======================================================
 
 ====================Valid CF Activities====================
-| ['A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_REGISTERED_COMPLETE'] 
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_ACCEPTED_COMPLETE'] 
 ===========================================================
 
 ====================Valid CF Resource====================
@@ -152,23 +150,21 @@
 =========================================================
 
 ====================Valid CF scenario output====================
-| [0.7 0.  0.5 0.9 1.  0.8 0.4] 
+| [0.7 0.  0.3 0.9 1.  1.  1. ] 
 ================================================================
 ```
 
 ### \subsection*{Change Amount and Resource}
-
 ```Not found```
 
 ### \subsection*{Change Amount and Activity}
-
 ```python
 ====================Valid CF Amount====================
-| 15225.252 
+| 15498.5 
 =======================================================
 
 ====================Valid CF Activities====================
-| ['A_FINALIZED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'A_ACTIVATED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_APPROVED_COMPLETE'] 
+| ['A_PARTLYSUBMITTED_COMPLETE', 'A_FINALIZED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PARTLYSUBMITTED_COMPLETE', 'A_PREACCEPTED_COMPLETE', 'A_ACCEPTED_COMPLETE'] 
 ===========================================================
 
 ====================Valid CF Resource====================
@@ -176,7 +172,7 @@
 =========================================================
 
 ====================Valid CF scenario output====================
-| [0.7 0.  0.1 0.4 0.6 0.5 0.2] 
+| [0.7 0.  0.3 0.9 1.  1.  1. ] 
 ================================================================
 ```
 
