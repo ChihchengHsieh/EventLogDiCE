@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from utils.print import print_block
+from typing import List
 
 def get_trace_with_idx(df, id):
     return df[[id in t for t in df["trace"]]]
@@ -38,3 +39,38 @@ def remove_tags_for_query_instance(activities, resources, rm_idx_activity, rm_id
 
 def remove_tags_for_seq(input_seq, tags_to_remove):
     return [i for i in input_seq if not i in tags_to_remove]
+
+
+def generate_fake_df(size: int, activity_feature_names: List[str], resource_feature_names: List[str], possible_activities: List, possible_resources: List, possbile_amount: List, trace_len: int):
+    '''
+    Generate a fake df to feed in DiCE Data since the DiCE doesn't support
+    "features_to_vary" argument when using "features" rather than "dataframe"
+    to create dice_ml.Data instance.
+    '''
+    if len(possbile_amount) != 2:
+        raise ValueError(
+            'possbile_amount should have length of 2 => [ min_, max_ ]')
+
+    fake_df = pd.DataFrame([])
+
+    # fake activities
+    for i in range(trace_len):
+        fake_df[activity_feature_names[i]] = np.random.choice(
+            possible_activities, size)
+
+    # fake resources
+    for i in range(trace_len):
+        fake_df[resource_feature_names[i]] = np.random.choice(
+            possible_resources, size)
+
+    # fake amount
+    # fake_df['amount'] = np.random.uniform(
+    #     possbile_amount[0], possbile_amount[1], (size,))
+
+    fake_df['amount'] = np.random.randint(
+        possbile_amount[0], possbile_amount[1], (size,))
+
+    # fake label
+    fake_df['predicted'] = np.random.choice([0, 1], size)
+
+    return fake_df

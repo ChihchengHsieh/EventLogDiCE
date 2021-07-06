@@ -12,7 +12,7 @@ class BPI2012Parameters(object):
     preprocessed_folder_path: str = "./data/preprocessed/BPI_Challenge_2012_with_resource"
 
     include_types: List[BPI2012ActivityType] = field(
-        default_factory=lambda: [BPI2012ActivityType.A, BPI2012ActivityType.O, BPI2012ActivityType.W])
+        default_factory=lambda: [BPI2012ActivityType.A])
 
     include_complete_only: bool = True
 
@@ -28,11 +28,11 @@ class BPI2012ScenarioParameters(object):
     preprocessed_folder_path: str = "./data/preprocessed/BPI_Challenge_2012_scenario"
 
     include_types: List[BPI2012ActivityType] = field(
-        default_factory=lambda: [BPI2012ActivityType.A, BPI2012ActivityType.O, BPI2012ActivityType.W])
+        default_factory=lambda: [BPI2012ActivityType.A])
 
     include_complete_only: bool = True
 
-    sample_times: int = 20
+    sample_times: int = 5
 
     def __post_init__(self):
         self.include_types = [BPI2012ActivityType[t] if type(
