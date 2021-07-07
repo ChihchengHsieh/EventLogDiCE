@@ -32,5 +32,4 @@ Trace information, including activities, reosurces and amount, input_query;
 5. make prediction for all cases in potential counterfactuals 
 
 6. Check the prediction to indentify counterfactual.
-
 ```
