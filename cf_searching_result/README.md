@@ -1,5 +1,6 @@
 
-## Nameing of the file
+## Name of the file
+
 {counterfactual(cf) or all_prediction(desired_df)}_{ground truth}_Amount_{amount argument value}_ReplaceAmount_{replace_amount argment value}_result.csv
 
 
