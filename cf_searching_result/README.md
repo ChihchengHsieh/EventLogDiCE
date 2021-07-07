@@ -15,6 +15,7 @@
 
 ## Algorithm to explain
 
+```
 Input:
 BPI2012 activity milestones, milestones;
 The activity to find counterfactual for, desired_activity;
@@ -31,3 +32,5 @@ Trace information, including activities, reosurces and amount, input_query;
 5. make prediction for all cases in potential counterfactuals 
 
 6. Check the prediction to indentify counterfactual.
+
+```
