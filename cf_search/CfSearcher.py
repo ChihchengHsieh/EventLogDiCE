@@ -25,11 +25,13 @@ class CfSearcher(object):
 
     def search(self, activities, desired, amount=None, replace_amount=None):
 
-        milestone_filtered = [
+        ## only keep the activties that are not milestones in the trace.
+        milestone_trace = [
             a for a in activities if a in self.milestones]
 
+        ## Find the cases containing milestone_filtered in training set.
         query_df = self.training_df[[all(
-            [v in t['activity_vocab'] for v in milestone_filtered]) for t in self.training_df.iloc]]
+            [v in t['activity_vocab'] for v in milestone_trace]) for t in self.training_df.iloc]]
 
         if not amount is None:
             query_df = query_df[query_df['amount'] == amount]            
@@ -41,6 +43,7 @@ class CfSearcher(object):
         if (len(desired_df) <= 0):
             raise Exception("Not matches found in trainig set")
 
+        # Remove tails 
         for idx in list(desired_df.index):
             desired_idx = desired_df.loc[idx]['activity_vocab'].index(desired)
 
@@ -74,4 +77,9 @@ class CfSearcher(object):
         desired_df['predicted_vocab'] = all_predicted_vocabs
         desired_df['predicted_value'] = all_predicted_value
 
-        return desired_df
+        desired_df['lengths'] = [len(a) for a in desired_df['activity_vocab']]
+        desired_df = desired_df.sort_values('lengths')
+
+        cf = desired_df[desired_df['predicted_vocab'] == desired]
+
+        return desired_df, cf

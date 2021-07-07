@@ -92,4 +92,4 @@ def get_example_data_with_removed_tail(dataset, trace_idx, tail_length_to_remove
     print_block(example_vocab_resources, "Resource (Tail removed)")
     print_block(ground_truth_vocab, "Ground Truth")
 
-    return example_vocab_activities, example_idx_activities, example_vocab_resources, example_idx_resources, example_amount
+    return example_vocab_activities, example_idx_activities, example_vocab_resources, example_idx_resources, example_amount, ground_truth_vocab
