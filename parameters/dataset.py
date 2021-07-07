@@ -4,7 +4,6 @@ from parameters.enum import (
     BPI2012ActivityType
 )
 
-
 @dataclass
 class BPI2012Parameters(object):
     file_path: str = "./data/event_logs/BPI_Challenge_2012.xes"
@@ -12,7 +11,7 @@ class BPI2012Parameters(object):
     preprocessed_folder_path: str = "./data/preprocessed/BPI_Challenge_2012_with_resource"
 
     include_types: List[BPI2012ActivityType] = field(
-        default_factory=lambda: [BPI2012ActivityType.A])
+        default_factory=lambda: [BPI2012ActivityType.A, BPI2012ActivityType.O, BPI2012ActivityType.W])
 
     include_complete_only: bool = True
 

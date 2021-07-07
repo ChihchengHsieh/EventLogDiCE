@@ -3,3 +3,6 @@ class NotSupportedError(Exception):
 
 class PermuatationException(Exception):
     pass
+
+
+## 621 ywo 2:08pm
