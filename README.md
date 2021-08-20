@@ -24,6 +24,12 @@ Instead of using the LSTM baseline model directly, we have to implementation som
 
 ![DiCEBinaryOutputModelImg](https://user-images.githubusercontent.com/37566901/121686437-8533bc00-cb04-11eb-827d-ab32dd4e5c64.png)
 
+### Algorithms
+
+![image](https://user-images.githubusercontent.com/37566901/130183347-61db8124-fbe6-4252-bab1-99b94cc0a613.png)
+
+![image](https://user-images.githubusercontent.com/37566901/130183376-6192d9eb-ed0e-4b2c-9169-73414f25fc08.png)
+
 #### Example:
 
 1. Assume we have input trace like this.
