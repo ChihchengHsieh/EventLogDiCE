@@ -18,7 +18,6 @@ class CfSearcher(object):
         "A_REGISTERED_COMPLETE"
     ]) -> None:
         super().__init__()
-
         self.training_df = training_df
         self.pred_model = pred_model
         self.milestones = milestones
@@ -33,17 +32,18 @@ class CfSearcher(object):
         query_df = self.training_df[[all(
             [v in t['activity_vocab'] for v in milestone_trace]) for t in self.training_df.iloc]]
 
+        ## Find the cases with the same amount.
         if not amount is None:
             query_df = query_df[query_df['amount'] == amount]            
 
-        # Find with desired
+        # Find cases containing desired df.
         desired_df = query_df[[
             desired in v for v in query_df['activity_vocab']]]
 
         if (len(desired_df) <= 0):
             raise Exception("Not matches found in trainig set")
 
-        # Remove tails 
+        # Remove ground truth tails, so we can use model to make prediction to see if the prediction is the same as the ground truth.
         for idx in list(desired_df.index):
             desired_idx = desired_df.loc[idx]['activity_vocab'].index(desired)
 
@@ -52,10 +52,11 @@ class CfSearcher(object):
                               col] = desired_df.loc[idx][col][:desired_idx]
 
         desired_df = pd.DataFrame(desired_df)
-        
+
+        ### Replacing the amount in the cases if the replace_amount=True
         if not replace_amount is None:
             desired_df['amount'] = [replace_amount] * len(desired_df)
-        
+
         all_predicted_vocabs = []
         all_predicted_value = []
         for idx in range(len(desired_df)):
