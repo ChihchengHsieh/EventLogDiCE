@@ -1,5 +1,6 @@
 import tensorflow as tf
 import pandas as pd
+import textdistance
 
 
 class CfSearcher(object):
@@ -24,17 +25,17 @@ class CfSearcher(object):
 
     def search(self, activities, desired, amount=None, replace_amount=None):
 
-        ## only keep the activties that are not milestones in the trace.
+        # only keep the activties that are not milestones in the trace.
         milestone_trace = [
             a for a in activities if a in self.milestones]
 
-        ## Find the cases containing milestone_filtered in training set.
+        # Find the cases containing milestone_filtered in training set.
         query_df = self.training_df[[all(
             [v in t['activity_vocab'] for v in milestone_trace]) for t in self.training_df.iloc]]
 
-        ## Find the cases with the same amount.
+        # Find the cases with the same amount.
         if not amount is None:
-            query_df = query_df[query_df['amount'] == amount]            
+            query_df = query_df[query_df['amount'] == amount]
 
         # Find cases containing desired df.
         desired_df = query_df[[
@@ -53,7 +54,7 @@ class CfSearcher(object):
 
         desired_df = pd.DataFrame(desired_df)
 
-        ### Replacing the amount in the cases if the replace_amount=True
+        # Replacing the amount in the cases if the replace_amount=True
         if not replace_amount is None:
             desired_df['amount'] = [replace_amount] * len(desired_df)
 
@@ -79,7 +80,10 @@ class CfSearcher(object):
         desired_df['predicted_value'] = all_predicted_value
 
         desired_df['lengths'] = [len(a) for a in desired_df['activity_vocab']]
-        desired_df = desired_df.sort_values('lengths')
+        desired_df['activity_sparcity'] = [textdistance.levenshtein.distance(
+            activities, a) for a in desired_df['activity_vocab']]
+        
+        desired_df = desired_df.sort_values('activity_sparcity')
 
         cf = desired_df[desired_df['predicted_vocab'] == desired]
 
