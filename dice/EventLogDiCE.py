@@ -281,6 +281,8 @@ class EventLogDiCE():
             model_input
         )
 
+        # dpp_style:inverse_dist
+
         init_predicted_vocab = self.activity_vocab.index_to_vocab(
             init_predicted_idx)
 
