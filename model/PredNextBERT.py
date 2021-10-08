@@ -65,7 +65,7 @@ class PredNextBERT(tf.keras.Model):
             "SavedModels/%.4f_%s_%s_%s" % (test_accuracy,
                                            self.name,
                                            additional,
-                                           str(datetime.now())),
+                                           str(datetime.now())).replacee(":", "'"),
         )
         return saving_folder_path
 
