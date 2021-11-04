@@ -24,6 +24,7 @@ class DiCE4EL_BPI2012():
                  possible_activities,
                  possible_resources,
                  pred_model,
+                 scenario_model,
                  train_df,
                  activity_milestones=[
                      "A_SUBMITTED_COMPLETE",
@@ -43,6 +44,7 @@ class DiCE4EL_BPI2012():
                  ):
 
         self.pred_model = pred_model
+        self.secenario_model = scenario_model
 
         self.activity_vocab = activity_vocab
         self.resource_vocab = resource_vocab
@@ -192,6 +194,40 @@ class DiCE4EL_BPI2012():
 
         return all_predicted_idx, all_predicted_vocabs, all_predicted_value
 
+    def get_scenario_loss(self, df, amonut_v, scenario_using_hinge_loss=True):
+
+        all_scenario_loss = tf.constant(0)
+
+        for idx in range(len(df)):
+            ex_activity = tf.constant(
+                [df.iloc[idx]['activity']], dtype=tf.float32)
+            ex_resource = tf.constant(
+                [df.iloc[idx]['resource']], dtype=tf.float32)
+
+            # Calculate the scenario loss for each. 
+
+            ex_activity = tf.constant(
+                [df.iloc[idx]['activity']], dtype=tf.float32)
+            ex_resource = tf.constant(
+                [df.iloc[idx]['resource']], dtype=tf.float32)
+            out, _ = self.secenario_model(
+                ex_activity, ex_resource, amonut_v[idx], training=False)
+
+            if scenario_using_hinge_loss:
+                loss = tf.reduce_sum(
+                    tf.keras.metrics.hinge(tf.ones_like(out), out))
+            else:
+                out = tf.nn.sigmoid(out)
+                loss = tf.reduce_sum(tf.keras.losses.binary_crossentropy(
+                    y_true=tf.ones_like(out), y_pred=out,  from_logits=False
+                ))
+            
+
+            all_scenario_loss += loss
+
+        return all_scenario_loss
+
+
     def generate_counterfactual(
         self,
         amount_input,
@@ -202,6 +238,7 @@ class DiCE4EL_BPI2012():
         use_clipping=True,
         class_loss_weight=1.0,
         distance_loss_weight=1e-8,
+        scenario_loss_weight=1e-2,
         verbose_freq=20,
         max_iter=200,
         lr=0.05,
@@ -280,6 +317,9 @@ class DiCE4EL_BPI2012():
                 distance_loss = self.min_max_scale_amount(
                     tf.pow(cf_amounts - amounts_backup, 2))
 
+                # Scenario loss
+                scenario_loss = self.get_scenario_loss(desired_df, amonut_v= cf_amounts)
+
                 # Trying to use another loss.
                 if class_using_hinge_loss:
                     class_loss = tf.keras.metrics.hinge(
@@ -295,7 +335,7 @@ class DiCE4EL_BPI2012():
 
                 # Get total loss
                 # the category loss need to prevent the updated cf so different from the original one.
-                loss = (class_loss_weight * class_loss) + (distance_loss * distance_loss_weight)
+                loss = (class_loss_weight * class_loss) + (distance_loss * distance_loss_weight) + (scenario_loss *scenario_loss_weight )
 
             if (i != 0) and i % verbose_freq == 0:
                 print_block(f"Total [{loss.numpy().flatten()[0]:.2f}] | " +
