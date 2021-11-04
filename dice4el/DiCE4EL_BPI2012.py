@@ -196,7 +196,7 @@ class DiCE4EL_BPI2012():
 
     def get_scenario_loss(self, df, amonut_v, scenario_using_hinge_loss=True):
 
-        all_scenario_loss = tf.constant(0)
+        all_scenario_loss = tf.constant(0, dtype=tf.float32)
 
         for idx in range(len(df)):
             ex_activity = tf.constant(
@@ -222,7 +222,6 @@ class DiCE4EL_BPI2012():
                     y_true=tf.ones_like(out), y_pred=out,  from_logits=False
                 ))
             
-
             all_scenario_loss += loss
 
         return all_scenario_loss
@@ -235,6 +234,7 @@ class DiCE4EL_BPI2012():
         idx_resources,
         desired_vocab,
         class_using_hinge_loss=True,
+        scenario_using_hinge_loss= True,
         use_clipping=True,
         class_loss_weight=1.0,
         distance_loss_weight=1e-8,
@@ -286,6 +286,11 @@ class DiCE4EL_BPI2012():
         # Filter the vocab again.
         same_amount_desired_df = desired_df[desired_df['same_amount_predicted_vocab'] == desired_vocab]
 
+
+        ########################
+        # 1st output chance.
+        ########################
+
         if len(same_amount_desired_df) > 0:
             print_block(f"Found {len(same_amount_desired_df)} cases.", "SAME AMOUNT COUNTERFACTUALS")
             return same_amount_desired_df[self.return_features]
@@ -317,8 +322,11 @@ class DiCE4EL_BPI2012():
                 distance_loss = self.min_max_scale_amount(
                     tf.pow(cf_amounts - amounts_backup, 2))
 
+                self.desired_df = desired_df
+                self.cf_amounts = cf_amounts
+
                 # Scenario loss
-                scenario_loss = self.get_scenario_loss(desired_df, amonut_v= cf_amounts)
+                scenario_loss = self.get_scenario_loss(desired_df, cf_amounts, scenario_using_hinge_loss)
 
                 # Trying to use another loss.
                 if class_using_hinge_loss:
@@ -344,8 +352,6 @@ class DiCE4EL_BPI2012():
                             f"Step {i} Loss")
 
             grad = tape.gradient(loss,  [cf_amounts])
-
-            self.grad = grad
 
             optim.apply_gradients(zip(grad, [cf_amounts]))
 
